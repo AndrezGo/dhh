@@ -58,7 +58,7 @@ const DecoratorBlob2 = styled(SvgDecoratorBlob2)`
 `;
 
 export default ({
-  heading = "Checkout the Menu",
+  heading = "Checkout the Products",
   tabs = {
     Top: getRandomCards(),
     Kitchen: [
@@ -294,8 +294,9 @@ export default ({
   return (
     <Container>
       <ContentWithPaddingXl>
+        <Header>{heading}</Header>
         <HeaderRow>
-          <Header>{heading}</Header>
+          <div>Search </div>
           <TabsControl>
             {Object.keys(tabs).map((tabName, index) => (
               <TabControl key={index} active={activeTab === tabName} onClick={() => setActiveTab(tabName)}>

@@ -72,6 +72,11 @@ export default ({ roundedHeaderButton = false, logoLink, links, className, colla
         {logoLink}
         {links}
       </DesktopNavLinks>
+      <NavToggle>
+        <MobileNavLinksContainer css={collapseBreakpointCss.mobileNavLinksContainer}>
+          {logoLink}
+        </MobileNavLinksContainer>
+      </NavToggle>
     </Header>
   );
 };

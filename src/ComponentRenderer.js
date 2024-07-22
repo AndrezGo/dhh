@@ -11,7 +11,6 @@ import SignupPage from "pages/Signup.js";
 import LoginPageImageSrc from "images/demo/LoginPage.jpeg";
 
 import BackgroundAsImageHero from "components/hero/BackgroundAsImage.js";
-import IllustrationAndVideoHero from "components/hero/TwoColumnWithVideo.js";
 import IllustrationAndInputHero from "components/hero/TwoColumnWithInput.js";
 import FeaturesAndTestimonialHero from "components/hero/TwoColumnWithFeaturesAndTestimonial.js";
 import FullWidthWithImageHero from "components/hero/FullWidthWithImage.js";
@@ -91,11 +90,6 @@ export const components = {
           name: "With Image Illustration and Input",
           component: IllustrationAndInputHero,
           url: "/components/blocks/Hero/IllustrationAndInput",
-        },
-        IllustrationAndVideo: {
-          name: "With Image Illustration and Video",
-          component: IllustrationAndVideoHero,
-          url: "/components/blocks/Hero/IllustrationAndVideo",
         },
         FeaturesAndTestimonial: {
           name: "With Features And Customer Testimonial",
