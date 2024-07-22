@@ -299,10 +299,10 @@ export default ({
       <ContentWithPaddingXl>
         <Header>{heading}</Header>
         <HeaderRow>
-        <SearchForm method="get" action="#">
+              {/* <SearchForm method="get" action="#">
                 <Input type="text" placeholder="For example: Speakers" />
                 <SearchButton type="submit">Get the best</SearchButton>
-              </SearchForm>
+              </SearchForm> */}
           <TabsControl>
             {Object.keys(tabs).map((tabName, index) => (
               <TabControl key={index} active={activeTab === tabName} onClick={() => setActiveTab(tabName)}>

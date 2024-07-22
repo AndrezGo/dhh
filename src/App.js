@@ -1,6 +1,7 @@
 import React from "react";
 import GlobalStyles from 'styles/GlobalStyles';
 import ComponentRenderer from "ComponentRenderer.js";
+import { SpeedInsights } from "@vercel/speed-insights/react"
 import ThankYouPage from "ThankYouPage.js";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/" element={<Home />} />
         </Routes>
+        <SpeedInsights />
       </Router>
     </>
   );
