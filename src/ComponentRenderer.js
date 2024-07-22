@@ -2,40 +2,13 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import AnimationRevealPage from "helpers/AnimationRevealPage.js"
 
-import EventLandingPage from "demos/EventLandingPage.js";
-import HotelTravelLandingPage from "demos/HotelTravelLandingPage.js";
-import AgencyLandingPage from "demos/AgencyLandingPage.js";
-import SaaSProductLandingPage from "demos/SaaSProductLandingPage.js";
-import RestaurantLandingPage from "demos/RestaurantLandingPage.js";
-import ServiceLandingPage from "demos/ServiceLandingPage.js";
-import HostingCloudLandingPage from "demos/HostingCloudLandingPage.js";
 
-import EventLandingPageImageSrc from "images/demo/EventLandingPage.jpeg";
-import HotelTravelLandingPageImageSrc from "images/demo/HotelTravelLandingPage.jpeg";
-import AgencyLandingPageImageSrc from "images/demo/AgencyLandingPage.jpeg";
-import SaaSProductLandingPageImageSrc from "images/demo/SaaSProductLandingPage.jpeg";
+import Home from "./Home.js";
 import RestaurantLandingPageImageSrc from "images/demo/RestaurantLandingPage.jpeg";
-import ServiceLandingPageImageSrc from "images/demo/ServiceLandingPage.jpeg";
-import HostingCloudLandingPageImageSrc from "images/demo/HostingCloudLandingPage.jpeg";
-
 
 import LoginPage from "pages/Login.js";
 import SignupPage from "pages/Signup.js";
-import PricingPage from "pages/Pricing.js";
-import AboutUsPage from "pages/AboutUs.js";
-import ContactUsPage from "pages/ContactUs.js";
-import BlogIndexPage from "pages/BlogIndex.js";
-import TermsOfServicePage from "pages/TermsOfService.js";
-import PrivacyPolicyPage from "pages/PrivacyPolicy.js";
-
 import LoginPageImageSrc from "images/demo/LoginPage.jpeg";
-import SignupPageImageSrc from "images/demo/SignupPage.jpeg";
-import PricingPageImageSrc from "images/demo/PricingPage.jpeg";
-import AboutUsPageImageSrc from "images/demo/AboutUsPage.jpeg";
-import ContactUsPageImageSrc from "images/demo/ContactUsPage.jpeg";
-import BlogIndexPageImageSrc from "images/demo/BlogIndexPage.jpeg";
-import TermsOfServicePageImageSrc from "images/demo/TermsOfServicePage.jpeg";
-import PrivacyPolicyPageImageSrc from "images/demo/PrivacyPolicyPage.jpeg";
 
 import BackgroundAsImageHero from "components/hero/BackgroundAsImage.js";
 import IllustrationAndVideoHero from "components/hero/TwoColumnWithVideo.js";
@@ -44,10 +17,6 @@ import FeaturesAndTestimonialHero from "components/hero/TwoColumnWithFeaturesAnd
 import FullWidthWithImageHero from "components/hero/FullWidthWithImage.js";
 import BackgroundAsImageWithCenteredContentHero from "components/hero/BackgroundAsImageWithCenteredContent.js";
 import IllustrationAndPrimaryBackgroundHero from "components/hero/TwoColumnWithPrimaryBackground.js";
-
-import TwoPlansWithDurationSwitcherPricing from "components/pricing/TwoPlansWithDurationSwitcher.js";
-import ThreePlansWithHalfPrimaryBackgroundPricing from "components/pricing/ThreePlansWithHalfPrimaryBackground.js";
-import ThreePlansPricing from "components/pricing/ThreePlans.js";
 
 import ThreeColWithSideImageFeatures from "components/features/ThreeColWithSideImage.js";
 import TwoColWithButtonFeatures from "components/features/TwoColWithButton.js";
@@ -68,17 +37,8 @@ import PortfolioCards from "components/cards/PortfolioTwoCardsWithImage.js";
 import TabGridCards from "components/cards/TabCardGrid.js";
 import ProfileThreeColGridCards from "components/cards/ProfileThreeColGrid.js"
 import ThreeColContactDetailsCards from "components/cards/ThreeColContactDetails.js"
-
-import ThreeColSimpleWithImageBlog from "components/blogs/ThreeColSimpleWithImage.js";
-import ThreeColSimpleWithImageAndDashedBorderBlog from "components/blogs/ThreeColSimpleWithImageAndDashedBorder.js";
 import PopularAndRecentPostsBlog from "components/blogs/PopularAndRecentBlogPosts.js";
 import GridWithFeaturedPostBlog from "components/blogs/GridWithFeaturedPost.js";
-
-import TwoColumnWithImageTestimonial from "components/testimonials/TwoColumnWithImage.js";
-import TwoColumnWithImageAndProfilePictureReviewTestimonial from "components/testimonials/TwoColumnWithImageAndProfilePictureReview.js";
-import TwoColumnWithImageAndRatingTestimonial from "components/testimonials/TwoColumnWithImageAndRating.js";
-import ThreeColumnWithProfileImageTestimonial from "components/testimonials/ThreeColumnWithProfileImage.js";
-import SimplePrimaryBackgroundTestimonial from "components/testimonials/SimplePrimaryBackground.js";
 
 import SimpleWithSideImageFAQS from "components/faqs/SimpleWithSideImage.js";
 import SingleColFAQS from "components/faqs/SingleCol.js";
@@ -103,40 +63,10 @@ import MiniCenteredFooter from "components/footers/MiniCenteredFooter.js";
 export const components = {
   landingPages: {
     RestaurantLandingPage: {
-      component: RestaurantLandingPage,
+      component: Home,
       imageSrc: RestaurantLandingPageImageSrc,
-      url: "/components/landingPages/RestaurantLandingPage",
-    },
-    HotelTravelLandingPage: {
-      component: HotelTravelLandingPage,
-      imageSrc: HotelTravelLandingPageImageSrc,
-      url: "/components/landingPages/HotelTravelLandingPage",
-    },
-    SaaSProductLandingPage: {
-      component: SaaSProductLandingPage,
-      imageSrc: SaaSProductLandingPageImageSrc,
-      url: "/components/landingPages/SaaSProductLandingPage",
-    },
-    ServiceLandingPage: {
-      component: ServiceLandingPage,
-      imageSrc: ServiceLandingPageImageSrc,
-      url: "/components/landingPages/ServiceLandingPage",
-    },
-    EventLandingPage: {
-      component: EventLandingPage,
-      imageSrc: EventLandingPageImageSrc,
-      url: "/components/landingPages/EventLandingPage",
-    },
-    AgencyLandingPage: {
-      component: AgencyLandingPage,
-      imageSrc: AgencyLandingPageImageSrc,
-      url: "/components/landingPages/AgencyLandingPage",
-    },
-    HostingCloudLandingPage: {
-      component: HostingCloudLandingPage,
-      imageSrc: HostingCloudLandingPageImageSrc,
-      url: "/components/landingPages/HostingCloudLandingPage",
-    },
+      url: "/components/landingPages/Home",
+    }
   },
 
   innerPages: {
@@ -145,42 +75,6 @@ export const components = {
       imageSrc: LoginPageImageSrc,
       scrollAnimationDisabled: true,
       url: "/components/innerPages/LoginPage",
-    },
-    SignupPage: {
-      component: SignupPage,
-      url: `/components/innerPages/SignupPage`,
-      imageSrc: SignupPageImageSrc,
-      scrollAnimationDisabled: true,
-    },
-    PricingPage: {
-      component: PricingPage,
-      url: `/components/innerPages/PricingPage`,
-      imageSrc: PricingPageImageSrc,
-    },
-    AboutUsPage: {
-      component: AboutUsPage,
-      url: `/components/innerPages/AboutUsPage`,
-      imageSrc: AboutUsPageImageSrc,
-    },
-    ContactUsPage: {
-      component: ContactUsPage,
-      url: `/components/innerPages/ContactUsPage`,
-      imageSrc: ContactUsPageImageSrc,
-    },
-    BlogIndexPage: {
-      component: BlogIndexPage,
-      url: `/components/innerPages/BlogIndexPage`,
-      imageSrc: BlogIndexPageImageSrc,
-    },
-    TermsOfServicePage: {
-      component: TermsOfServicePage,
-      url: `/components/innerPages/TermsOfServicePage`,
-      imageSrc: TermsOfServicePageImageSrc,
-    },
-    PrivacyPolicyPage: {
-      component: PrivacyPolicyPage,
-      url: `/components/innerPages/PrivacyPolicyPage`,
-      imageSrc: PrivacyPolicyPageImageSrc,
     }
   },
 
@@ -225,26 +119,7 @@ export const components = {
         },
       }
     },
-    Pricing: {
-      type: "Pricing Section",
-      elements: {
-        TwoPlansWithDurationSwitcher: {
-          name: "Two Plans With Duration Switcher",
-          component: TwoPlansWithDurationSwitcherPricing,
-          url: "/components/blocks/Pricing/TwoPlansWithDurationSwitcher",
-        },
-        ThreePlansWithHalfPrimaryBackground: {
-          name: "Three Plans With Primary Background at Top",
-          component: ThreePlansWithHalfPrimaryBackgroundPricing,
-          url: "/components/blocks/Pricing/ThreePlansWithHalfPrimaryBackground",
-        },
-        ThreePlans: {
-          name: "Simple Three Plans",
-          component: ThreePlansPricing,
-          url: "/components/blocks/Pricing/ThreePlans",
-        },
-      }
-    },
+    
     Features: {
       type: "Features Section",
       elements: {
@@ -359,49 +234,8 @@ export const components = {
           name: "Popular And Recent Posts",
           component: PopularAndRecentPostsBlog,
           url: "/components/blocks/Blog/PopularAndRecentPosts",
-        },
-        ThreeColSimpleWithImage: {
-          name: "Simple Three Column With Image",
-          component: ThreeColSimpleWithImageBlog,
-          url: "/components/blocks/Blog/ThreeColSimpleWithImage",
-        },
-        ThreeColSimpleWithImageAndDashedBorder: {
-          name: "Simple Three Column With Image and Dashed Border",
-          component: ThreeColSimpleWithImageAndDashedBorderBlog,
-          url: "/components/blocks/Blog/ThreeColSimpleWithImageAndDashedBorder",
-        },
+        },       
       } 
-    },
-
-    Testimonial: {
-      type: "Testimonial Section",
-      elements: {
-        TwoColumnWithImage: {
-          name: "Two Column With Image",
-          component: TwoColumnWithImageTestimonial,
-          url: "/components/blocks/Testimonial/TwoColumnWithImage",
-        },
-        TwoColumnWithImageAndProfilePictureReview: {
-          name: "Two Column With Image And Profile Picture Review",
-          component: TwoColumnWithImageAndProfilePictureReviewTestimonial,
-          url: "/components/blocks/Testimonial/TwoColumnWithImageAndProfilePictureReview",
-        },
-        TwoColumnWithImageAndRating: {
-          name: "Two Column With Image And Rating",
-          component: TwoColumnWithImageAndRatingTestimonial,
-          url: "/components/blocks/Testimonial/TwoColumnWithImageAndRating",
-        },
-        ThreeColumnWithProfileImage: {
-          name: "Three Column With Profile Image",
-          component: ThreeColumnWithProfileImageTestimonial,
-          url: "/components/blocks/Testimonial/ThreeColumnWithProfileImage",
-        },
-        SimplePrimaryBackground: {
-          name: "Simple With Primary Background",
-          component: SimplePrimaryBackgroundTestimonial,
-          url: "/components/blocks/Testimonial/SimplePrimaryBackground",
-        },
-      }
     },
 
     FAQS: {

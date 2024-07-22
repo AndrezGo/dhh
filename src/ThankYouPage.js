@@ -6,7 +6,7 @@ import tw from "twin.macro";
 import { css } from "styled-components/macro"; 
 import GitHubButton from "react-github-btn";
 
-import { LogoLink } from "components/headers/light.js";
+import { LogoLink } from "components/headers/header.js";
 import { SectionHeading as HeadingBase } from "components/misc/Headings";
 import { SectionDescription as DescriptionBase } from "components/misc/Typography";
 

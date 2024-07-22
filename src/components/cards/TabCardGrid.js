@@ -6,7 +6,6 @@ import { css } from "styled-components/macro"; //eslint-disable-line
 import { Container, ContentWithPaddingXl } from "components/misc/Layouts.js";
 import { SectionHeading } from "components/misc/Headings.js";
 import { PrimaryButton as PrimaryButtonBase } from "components/misc/Buttons.js";
-import { ReactComponent as StarIcon } from "images/star-icon.svg";
 import { ReactComponent as SvgDecoratorBlob1 } from "images/svg-decorator-blob-5.svg";
 import { ReactComponent as SvgDecoratorBlob2 } from "images/svg-decorator-blob-7.svg";
 
@@ -565,16 +564,6 @@ const getRandomCards = () => {
       reviews: "87",
       url: "https://amzn.to/4fmGOaK"
     }
-    ,
-    {
-      imageSrc:"https://m.media-amazon.com/images/I/71J+Mv115IL._AC_SL1500_.jpg",
-      title: "Aucma Stand Mixer,6.5-QT 660W 6",
-      content: "Speed Tilt-Head Food Mixer, Kitchen Electric Mixer with Dough Hook, Wire Whip & Beater (6.5QT, Blue)",
-      price: "$5.99",
-      rating: "5.0",
-      reviews: "87",
-      url: "https://amzn.to/4fmGOaK"
-    },
     ,
     {
       imageSrc:"https://m.media-amazon.com/images/I/61eqNRPW8mL._AC_SL1500_.jpg",
