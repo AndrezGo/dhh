@@ -12,10 +12,8 @@ module.exports = {
     },
     colors: {
       transparent: 'transparent',
-
       black: '#000',
       white: '#fff',
-
       primary: {
         100: '#a273ff',
         200: '#935bff',
@@ -27,7 +25,6 @@ module.exports = {
         800: '#460fb3',
         900: '#3c0d99',
       },
-
       secondary: {
         100: '#fff5f5',
         200: '#667892',
@@ -39,9 +36,8 @@ module.exports = {
         800: '#192b45',
         900: '#16253b',
       },
-
       gray: {
-        "lightest": "#fff",
+        lightest: "#fff",
         100: '#f7fafc',
         200: '#edf2f7',
         300: '#e2e8f0',
@@ -375,6 +371,7 @@ module.exports = {
     maxHeight: {
       full: '100%',
       screen: '100vh',
+      '40': '10rem',
     },
     maxWidth: (theme, { breakpoints }) => ({
       none: 'none',
