@@ -105,7 +105,7 @@ const ProductCard = ({ product, rank }) => (
       <CardText>
         <CardTitle>{truncate(product.title, 50)}</CardTitle>
         <CardContent>{truncate(product.content, 100)}</CardContent>
-        <CardPrice>${parseFloat(product.price.replace(/[^0-9.-]+/g,"")).toFixed(2)}</CardPrice>
+        <CardPrice>{ product.price }</CardPrice>
       </CardText>
     </Card>
   </CardContainer>
@@ -128,7 +128,7 @@ const calculateScore = (product) => {
 
 const getTopProducts = (products, start = 0, count = 3) => {
   return products
-    .filter(product => product.price && !isNaN(parseFloat(product.price.replace(/[^0-9.-]+/g, ""))))
+    .filter(product => product.price && !isNaN(product.price))
     .sort((a, b) => calculateScore(b) - calculateScore(a))
     .slice(start, start + count);
 };
@@ -154,7 +154,7 @@ const renderTopThreeTable = (products) => (
     <tbody>
       {products.map((product, index) => {
         const rowColor = index === 0 ? "#ccffcc" : index === 1 ? "#ffffcc" : "#FFF";
-        const price = `$${parseFloat(product.price.replace(/[^0-9.-]+/g,"")).toFixed(2)}`;
+        const price = `$${product.price}`;
         const rating = product.rating.split(' ')[0];
         const reviews = product.reviews.split(' ')[0];
         return (
