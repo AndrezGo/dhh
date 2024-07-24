@@ -14,7 +14,7 @@ export default () => {
       <TabGrid
         heading={
           <>
-            Checkout Amazon <HighlightedText>Products.</HighlightedText>
+            Lo mejor de <HighlightedText>Mercado libre</HighlightedText>
           </>
         }
       />
