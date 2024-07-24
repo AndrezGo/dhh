@@ -1,24 +1,45 @@
-import React from "react";
-import tw from "twin.macro";
-import AnimationRevealPage from "helpers/AnimationRevealPage.js";
-import Header from "components/headers/header.js";
-import TabGrid from "components/cards/TabCardGrid.js";
-import Footer from "components/footers/FiveColumnWithInputForm.js";
+import React, { useState, useEffect } from "react";
 
-export default () => {
-  const HighlightedText = tw.span`bg-primary-500 text-gray-100 px-4 transform -skew-x-12 inline-block`;
-  const imageCss = tw`rounded-4xl`;
-  return (
-    <AnimationRevealPage>
-      <Header />
-      <TabGrid
-        heading={
-          <>
-            Lo mejor de <HighlightedText>Mercado libre</HighlightedText>
-          </>
+const App = () => {
+  const [searchResults, setSearchResults] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://market-scraper-api.vercel.app/api/search?keywords=laptop');
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
         }
-      />
-      <Footer />
-    </AnimationRevealPage>
+        const data = await response.json();
+        setSearchResults(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <div>
+      <h1>Lo mejor de Mercado Libre</h1>
+      {error && (
+        <div>
+          <p>Error: {error}</p>
+        </div>
+      )}
+      {searchResults ? (
+        <div>
+          <pre>{JSON.stringify(searchResults, null, 2)}</pre>
+        </div>
+      ) : (
+        <div>
+          <p>Cargando datos...</p>
+        </div>
+      )}
+    </div>
   );
-}
+};
+
+export default App;
