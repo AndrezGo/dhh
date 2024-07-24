@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import tw from "twin.macro";
 import styled from "styled-components";
@@ -44,7 +44,7 @@ const DecoratorBlob2 = styled(SvgDecoratorBlob2)`
   ${tw`pointer-events-none -z-20 absolute left-0 bottom-0 h-80 w-80 opacity-15 transform -translate-x-2/3 text-primary-500`}
 `;
 
-const ProductCard = ({ product }) => (
+const ProductCard = ({ product, tag }) => (
   <CardContainer>
     <Card className="group" href={product.link} initial="rest" whileHover="hover" animate="rest">
       <CardImageContainer>
@@ -54,6 +54,7 @@ const ProductCard = ({ product }) => (
         <CardTitle>{truncate(product.title, 50)}</CardTitle>
         <CardContent>{truncate(product.content, 100)}</CardContent>
         <CardPrice>{product.price}</CardPrice>
+        {tag && <span tw="bg-blue-500 text-white px-2 py-1 rounded">{tag}</span>}
       </CardText>
     </Card>
   </CardContainer>
@@ -65,14 +66,41 @@ const truncate = (str, maxLength) => {
   return str.slice(0, maxLength) + '...';
 };
 
+const getBestProducts = (products) => {
+  const filteredProducts = products.filter(product => {
+    return product.price !== "N/A" && product.title !== "N/A" && product.image && product.link;
+  });
+
+  const validProducts = filteredProducts.map(product => ({
+    ...product,
+    rating: product.rating === "N/A" ? 0 : parseFloat(product.rating),
+    reviews: product.reviews === "N/A" ? 0 : parseInt(product.reviews, 10),
+    price: product.price
+  }));
+
+  const sortedProducts = validProducts.sort((a, b) => {
+    const aScore = a.rating * 0.5 + a.reviews * 0.3 + a.price * 0.2;
+    const bScore = b.rating * 0.5 + b.reviews * 0.3 + b.price * 0.2;
+    return bScore - aScore;
+  });
+  
+  return sortedProducts.slice(0, 3).map((product, index) => ({
+    ...product,
+    tag: index === 0 ? 'Best Buy' : index === 1 ? 'Great Value' : 'Top Choice',
+  }));
+};
+
 export default ({ heading = "Compare MercadoLibre Products" }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [apiResults, setApiResults] = useState([]); // To store raw API results for debugging
 
   const handleSearch = async (event) => {
     event.preventDefault();
+    setSearchResults([]); // Clear previous results
     const results = await searchMercadoLibre(searchTerm);
-    setSearchResults(results);
+    setApiResults(results); // Store raw API results for debugging
+    setSearchResults(getBestProducts(results));
   };
 
   return (
@@ -90,18 +118,22 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
             <SearchButton type="submit">Get the best</SearchButton>
           </SearchForm>
         </HeaderRow>
-
-        {searchResults.length > 0 && (
+        {searchResults.length > 0 ? (
+          <>
+            <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
+              Products analyzed: {apiResults.length}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "20px" }}>
+              {searchResults.map((product, index) => (
+                <ProductCard key={product.title} product={product} tag={product.tag} />
+              ))}
+            </div>
+          </>
+        ) : (
           <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
-            Products analyzed: {searchResults.length}
+            No articles to display
           </div>
         )}
-
-        <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "20px" }}>
-          {searchResults.map((product, index) => (
-            <ProductCard key={product.title} product={product} />
-          ))}
-        </div>
       </ContentWithPaddingXl>
       <DecoratorBlob1 />
       <DecoratorBlob2 />
