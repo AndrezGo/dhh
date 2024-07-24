@@ -1,55 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import tw from "twin.macro";
+import AnimationRevealPage from "helpers/AnimationRevealPage.js";
+import Header from "components/headers/header.js";
+import TabGrid from "components/cards/TabCardGrid.js";
+import Footer from "components/footers/FiveColumnWithInputForm.js";
 
-const App = () => {
-  const [searchResults, setSearchResults] = useState(null);
-  const [error, setError] = useState(null);
-  const [debugMessages, setDebugMessages] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setDebugMessages(prevMessages => [...prevMessages, 'Iniciando solicitud al servidor proxy...']);
-        const response = await fetch('https://market-scraper-api.vercel.app/api/search?keywords=laptop');
-        setDebugMessages(prevMessages => [...prevMessages, `Estado de la respuesta: ${response.status}`]);
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-        const data = await response.json();
-        setDebugMessages(prevMessages => [...prevMessages, `Datos recibidos del servidor proxy: ${JSON.stringify(data, null, 2)}`]);
-        setSearchResults(data);
-      } catch (err) {
-        setDebugMessages(prevMessages => [...prevMessages, `Error al obtener datos del servidor proxy: ${err.message}`]);
-        setError(err.message);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+export default () => {
+  const HighlightedText = tw.span`bg-primary-500 text-gray-100 px-4 transform -skew-x-12 inline-block`;
+  const imageCss = tw`rounded-4xl`;
   return (
-    <div>
-      <h1>Lo mejor de Mercado Libre</h1>
-      <div>
-        {debugMessages.map((msg, index) => (
-          <p key={index}>{msg}</p>
-        ))}
-      </div>
-      {error && (
-        <div>
-          <p>Error: {error}</p>
-        </div>
-      )}
-      {searchResults ? (
-        <div>
-          <pre>{JSON.stringify(searchResults, null, 2)}</pre>
-        </div>
-      ) : (
-        <div>
-          <p>Cargando datos...</p>
-        </div>
-      )}
-    </div>
+    <AnimationRevealPage>
+      <Header />
+      <TabGrid
+        heading={
+          <>
+            Lo mejor de <HighlightedText>Mercado libre</HighlightedText>
+          </>
+        }
+      />
+      <Footer />
+    </AnimationRevealPage>
   );
-};
-
-export default App;
+}
