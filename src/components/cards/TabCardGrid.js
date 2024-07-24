@@ -8,21 +8,33 @@ import { SectionHeading } from "components/misc/Headings.js";
 import { PrimaryButton as PrimaryButtonBase } from "components/misc/Buttons.js";
 import { ReactComponent as SvgDecoratorBlob1 } from "images/svg-decorator-blob-5.svg";
 import { ReactComponent as SvgDecoratorBlob2 } from "images/svg-decorator-blob-7.svg";
-import { searchProducts } from "amazonService";
+import { searchMercadoLibre } from "mercadoLibreService";
 
 const CACHE_DURATION = 600000; // 10 minutes in milliseconds
 
 const homeKeywords = [
-  "refrigerator", "fridge", "washing machine", "dryer", "dishwasher", "microwave", "oven", "iron", "blender","stand mixer", "hand mixer", "coffee maker", "vacuum cleaner", "air conditioner",
-  "sofa", "chair", "dining table", "bed", "nightstand", "wardrobe", "shelf", "desk",
-  "lamp", "mirror", "rug", "curtain", "photo frame", "storage organizer", "laundry basket",
-  "kitchen utensil", "pot", "pan", "plate", "glass", "cutlery", "cutting board", "toaster", "electric kettle", "food processor",
-  "towel", "bath mat", "shower curtain", "bathroom mirror", "bathroom shelf", "soap dispenser", "bathroom organizer",
-  "mattress", "pillow", "bed linen", "duvet", "cushion", "nightstand",
-  "television", "tv", "sound system", "tv stand", "coffee table", "recliner",
-  "cleaning product", "broom", "dustpan", "mop", "bucket", "steam cleaner",
-  "garden furniture", "barbecue", "gardening tool", "outdoor lighting","speaker","laptop"
+  // Electrodomésticos de Cocina
+  "refrigerador", "frigorífico", "lavadora", "secadora", "lavavajillas", "microondas", "horno", "plancha", "licuadora", "batidora", "cafetera", "aspiradora", "aire acondicionado",
+  // Muebles de Hogar
+  "sofá", "silla", "mesa de comedor", "cama", "mesita de noche", "armario", "estante", "escritorio",
+  // Decoración del Hogar
+  "lámpara", "espejo", "alfombra", "cortina", "marco de fotos", "organizador de almacenamiento", "canasta de lavandería",
+  // Utensilios de Cocina
+  "utensilio de cocina", "olla", "sartén", "plato", "vaso", "cubertería", "tabla de cortar", "tostadora", "hervidor eléctrico", "procesador de alimentos",
+  // Baño
+  "toalla", "alfombra de baño", "cortina de baño", "espejo de baño", "estante de baño", "dispensador de jabón", "organizador de baño",
+  // Ropa de Cama
+  "colchón", "almohada", "ropa de cama", "edredón", "cojín", "mesita de noche",
+  // Electrónica
+  "televisión", "televisor", "sistema de sonido", "soporte para TV", "mesa de centro", "sillón reclinable",
+  // Productos de Limpieza
+  "producto de limpieza", "escoba", "recogedor", "fregona", "cubo", "limpiador a vapor",
+  // Jardinería y Exterior
+  "muebles de jardín", "barbacoa", "herramienta de jardinería", "iluminación exterior",
+  // Tecnología
+  "altavoz", "ordenador portátil", "tabletas"
 ];
+
 
 const HeaderRow = tw.div`flex justify-between items-center flex-col xl:flex-row`;
 const Header = tw(SectionHeading)``;
@@ -83,9 +95,9 @@ const rankLabels = ["Best Buy", "Top Choice", "Great Value"];
 
 const ProductCard = ({ product, rank }) => (
   <CardContainer rank={rank}>
-    <Card className="group" href={product.associateLink || product.url} initial="rest" whileHover="hover" animate="rest">
+    <Card className="group" href={product.link} initial="rest" whileHover="hover" animate="rest">
       <CardImageContainer>
-        <CardImage src={product.image || product.imageSrc} alt={product.title} />
+        <CardImage src={product.image} alt={product.title} />
         <CustomCardRatingContainer>
           {rankLabels[rank - 1]}
         </CustomCardRatingContainer>
@@ -148,7 +160,7 @@ const renderTopThreeTable = (products) => (
         return (
           <tr key={product.title} style={{ backgroundColor: rowColor }}>
             <td style={{ padding: "10px" }}>
-              <img src={product.image || product.imageSrc} alt={product.title} style={{ maxWidth: "50px", marginRight: "10px" }} />
+              <img src={product.image} alt={product.title} style={{ maxWidth: "50px", marginRight: "10px" }} />
               {product.title}
             </td>
             <td>{price}</td>
@@ -162,7 +174,7 @@ const renderTopThreeTable = (products) => (
 );
 
 export default ({
-  heading = "Compare Amazon Products"
+  heading = "Compare MercadoLibre Products"
 }) => {
   const [searchTerm, setSearchTerm] = useState(localStorage.getItem('searchTerm') || '');
   const [suggestions, setSuggestions] = useState([]);
@@ -186,7 +198,7 @@ export default ({
     if (cache.current[searchTerm] && (now - cache.current[searchTerm].timestamp < CACHE_DURATION)) {
       setSearchResults(cache.current[searchTerm].results);
     } else {
-      const results = await searchProducts(searchTerm);
+      const results = await searchMercadoLibre(searchTerm);
       const filteredResults = filterHomeProducts(results);
       cache.current[searchTerm] = { results: filteredResults, timestamp: now };
       setSearchResults(filteredResults);
