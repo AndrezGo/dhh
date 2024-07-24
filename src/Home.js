@@ -9,7 +9,7 @@ const App = () => {
     const fetchData = async () => {
       try {
         setDebugMessages(prevMessages => [...prevMessages, 'Iniciando solicitud al servidor proxy...']);
-        const response = await fetch('/api/search?q=computadora');
+        const response = await fetch('https://market-scraper-api.vercel.app/api/search?keywords=laptop');
         setDebugMessages(prevMessages => [...prevMessages, `Estado de la respuesta: ${response.status}`]);
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
