@@ -8,31 +8,31 @@ import { SectionHeading } from "components/misc/Headings.js";
 import { PrimaryButton as PrimaryButtonBase } from "components/misc/Buttons.js";
 import { ReactComponent as SvgDecoratorBlob1 } from "images/svg-decorator-blob-5.svg";
 import { ReactComponent as SvgDecoratorBlob2 } from "images/svg-decorator-blob-7.svg";
-import { searchMercadoLibre } from "mercadoLibreService";
+import { searchMercadoLibre } from "../../mercadoLibreService";
 
 const CACHE_DURATION = 600000; // 10 minutes in milliseconds
 
 const homeKeywords = [
   // Electrodomésticos de Cocina
-  "refrigerador", "frigorífico", "lavadora", "secadora", "lavavajillas", "microondas", "horno", "plancha", "licuadora", "batidora", "cafetera", "aspiradora", "aire acondicionado",
+  "refrigerador", "frigorifico", "lavadora", "secadora", "lavavajillas", "microondas", "horno", "plancha", "licuadora", "batidora", "cafetera", "aspiradora", "aire acondicionado",
   // Muebles de Hogar
-  "sofá", "silla", "mesa de comedor", "cama", "mesita de noche", "armario", "estante", "escritorio",
+  "sofa", "silla", "mesa de comedor", "cama", "mesita de noche", "armario", "estante", "escritorio",
   // Decoración del Hogar
-  "lámpara", "espejo", "alfombra", "cortina", "marco de fotos", "organizador de almacenamiento", "canasta de lavandería",
+  "lámpara", "espejo", "alfombra", "cortina", "marco de fotos", "organizador de almacenamiento", "canasta de lavanderia",
   // Utensilios de Cocina
-  "utensilio de cocina", "olla", "sartén", "plato", "vaso", "cubertería", "tabla de cortar", "tostadora", "hervidor eléctrico", "procesador de alimentos",
+  "utensilio de cocina", "olla", "sarten", "plato", "vaso", "tabla de cortar", "tostadora", "hervidor eléctrico", "procesador de alimentos",
   // Baño
-  "toalla", "alfombra de baño", "cortina de baño", "espejo de baño", "estante de baño", "dispensador de jabón", "organizador de baño",
+  "toalla", "alfombra", "cortina", "espejo", "estante", "dispensador", "organizador",
   // Ropa de Cama
   "colchón", "almohada", "ropa de cama", "edredón", "cojín", "mesita de noche",
   // Electrónica
-  "televisión", "televisor", "sistema de sonido", "soporte para TV", "mesa de centro", "sillón reclinable",
+  "televisión", "televisor", "sistema de sonido", "soporte para TV", "mesa de centro", "sillon",
   // Productos de Limpieza
   "producto de limpieza", "escoba", "recogedor", "fregona", "cubo", "limpiador a vapor",
   // Jardinería y Exterior
-  "muebles de jardín", "barbacoa", "herramienta de jardinería", "iluminación exterior",
+  "muebles exteriores", "barbacoa",
   // Tecnología
-  "altavoz", "ordenador portátil", "tabletas"
+  "altavoz", "portatil", "tabletas"
 ];
 
 
