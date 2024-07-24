@@ -94,13 +94,24 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [apiResults, setApiResults] = useState([]); // To store raw API results for debugging
+  const [currentBatch, setCurrentBatch] = useState(0);
+  const [remainingCount, setRemainingCount] = useState(0);
 
   const handleSearch = async (event) => {
     event.preventDefault();
-    setSearchResults([]); // Clear previous results
+    setCurrentBatch(0);
     const results = await searchMercadoLibre(searchTerm);
     setApiResults(results); // Store raw API results for debugging
+    setRemainingCount(results.length); // Set the initial count of analyzed products
     setSearchResults(getBestProducts(results));
+  };
+
+  const showMoreProducts = () => {
+    const startIndex = (currentBatch + 1) * 3;
+    const newBatch = getBestProducts(apiResults.slice(startIndex, startIndex + 3));
+    setCurrentBatch(currentBatch + 1);
+    setRemainingCount(apiResults.length - (currentBatch + 1) * 3); // Update the remaining count
+    setSearchResults(newBatch);
   };
 
   return (
@@ -121,12 +132,17 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
         {searchResults.length > 0 ? (
           <>
             <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
-              Products analyzed: {apiResults.length}
+              Products analyzed: {remainingCount}
             </div>
             <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "20px" }}>
               {searchResults.map((product, index) => (
                 <ProductCard key={product.title} product={product} tag={product.tag} />
               ))}
+            </div>
+            <div style={{ textAlign: "center", marginTop: "20px" }}>
+              <button onClick={showMoreProducts} style={{ padding: "10px 20px", backgroundColor: "#4a90e2", color: "white", border: "none", borderRadius: "5px" }}>
+                Not what I'm looking for? Show more
+              </button>
             </div>
           </>
         ) : (
