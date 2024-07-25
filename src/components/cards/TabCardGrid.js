@@ -139,32 +139,26 @@ const getBestProducts = (products) => {
     return product.price !== "N/A" && product.title !== "N/A" && product.image && product.link;
   });
 
-  const validProducts = filteredProducts.map(product => ({
+  const uniqueProducts = filteredProducts.filter((product, index, self) =>
+    index === self.findIndex((p) => p.title === product.title)
+  );
+
+  const validProducts = uniqueProducts.map(product => ({
     ...product,
     rating: product.rating === "N/A" ? 0 : parseFloat(product.rating),
     reviews: product.reviews === "N/A" ? 0 : parseInt(product.reviews, 10),
-    numericPrice: parseFloat(product.price.replace(/[^0-9.-]+/g, "")), // Convert to numeric price for calculations
-    price: product.price // Keep original price for display
+    numericPrice: parseFloat(product.price.replace(/[^0-9.-]+/g, "")),
+    price: product.price
   }));
 
-  // Calcular puntuación compuesta
   validProducts.forEach(product => {
     product.score = product.rating * Math.log1p(product.reviews);
   });
 
-  // Ordenar los productos
   return validProducts.sort((a, b) => {
-    // Priorizar por la puntuación compuesta (calificación * log(reviews))
-    if (a.score !== b.score) {
-      return b.score - a.score; // Ordenar por puntuación descendente
-    }
-
-    // Si las puntuaciones son iguales, ordenar por precio ascendente
+    if (a.score !== b.score) return b.score - a.score;
     return a.numericPrice - b.numericPrice;
-  }).slice(0, 3).map((product, index) => ({
-    ...product,
-    tag: index === 0 ? 'Best Buy' : index === 1 ? 'Great Value' : 'Top Choice',
-  }));
+  });
 };
 
 const DecoratorBlob1 = styled(SvgDecoratorBlob1)`
@@ -177,9 +171,10 @@ const DecoratorBlob2 = styled(SvgDecoratorBlob2)`
 export default ({ heading = "Compare MercadoLibre Products" }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [apiResults, setApiResults] = useState([]); // To store raw API results for debugging
-  const [currentBatch, setCurrentBatch] = useState(0);
+  const [apiResults, setApiResults] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [remainingCount, setRemainingCount] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const productsAnalyzedRef = useRef(null);
@@ -187,23 +182,26 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
   const handleSearch = async (event) => {
     event.preventDefault();
     setIsLoading(true);
-    setHasSearched(false); // Hide the "No articles to display" label
-    setSearchResults([]); // Hide the products and "Products analyzed" label
-    setCurrentBatch(0);
+    setHasSearched(false);
+    setSearchResults([]);
+    setCurrentIndex(0);
     const results = await searchMercadoLibre(searchTerm);
-    setApiResults(results); // Store raw API results for debugging
-    setRemainingCount(results.length); // Set the initial count of analyzed products
-    setSearchResults(getBestProducts(results));
-    setHasSearched(true); // Indicate that a search has been performed
+    const sortedProducts = getBestProducts(results);
+    setApiResults(sortedProducts);
+    setTotalProducts(sortedProducts.length);
+    setRemainingCount(sortedProducts.length - 3);
+    setSearchResults(sortedProducts.slice(0, 3));
+    setCurrentIndex(3);
+    setHasSearched(true);
     setIsLoading(false);
   };
 
   const showMoreProducts = () => {
-    const startIndex = (currentBatch + 1) * 3;
-    const newBatch = getBestProducts(apiResults.slice(startIndex, startIndex + 3));
-    setCurrentBatch(currentBatch + 1);
-    setRemainingCount(apiResults.length - (currentBatch + 1) * 3); // Update the remaining count
-    setSearchResults(newBatch);
+    const nextIndex = currentIndex + 3;
+    const newBatch = apiResults.slice(currentIndex, nextIndex);
+    setCurrentIndex(nextIndex);
+    setRemainingCount(Math.max(remainingCount - newBatch.length, 0));
+    setSearchResults(prevResults => [...prevResults, ...newBatch]);
     productsAnalyzedRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -235,20 +233,22 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
         {hasSearched && !isLoading && searchResults.length > 0 && (
           <>
             <div ref={productsAnalyzedRef} style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
-              Products analyzed: {remainingCount}
+              Products analyzed: {totalProducts} Showing {currentIndex}/{remainingCount}
             </div>
             <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "20px" }}>
               <AnimatePresence>
                 {searchResults.map((product, index) => (
-                  <ProductCard key={product.title} product={product} tag={product.tag} />
+                  <ProductCard key={product.title + index} product={product} tag={product.tag} />
                 ))}
               </AnimatePresence>
             </div>
-            <div style={{ textAlign: "center", marginTop: "20px" }}>
-              <button onClick={showMoreProducts} style={{ padding: "10px 20px", backgroundColor: "#4a90e2", color: "white", border: "none", borderRadius: "5px" }}>
-                Not what I'm looking for? Show more
-              </button>
-            </div>
+            {remainingCount > 0 && (
+              <div style={{ textAlign: "center", marginTop: "20px" }}>
+                <button onClick={showMoreProducts} style={{ padding: "10px 20px", backgroundColor: "#4a90e2", color: "white", border: "none", borderRadius: "5px" }}>
+                  Not what I'm looking for? Show more
+                </button>
+              </div>
+            )}
           </>
         )}
         {hasSearched && !isLoading && searchResults.length === 0 && (
