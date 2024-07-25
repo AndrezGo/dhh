@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import tw from "twin.macro";
 import styled from "styled-components";
@@ -17,12 +17,12 @@ const Input = tw.input`bg-gray-300 px-6 py-3 rounded sm:rounded-r-none border-2 
 const SearchButton = tw(PrimaryButtonBase)`mt-4 sm:mt-0 w-full sm:w-auto rounded sm:rounded-l-none px-8 py-3`;
 
 const CardContainer = styled.div`
-  ${tw`w-full sm:w-1/2 md:w-1/3 lg:w-1/4 sm:pr-10 md:pr-6 lg:pr-12`};
+  ${tw`w-full sm:w-1/4 md:w-1/5 lg:w-1/6 sm:pr-4 md:pr-4 lg:pr-4 mb-4`};
 `;
-const Card = tw(motion.a)`bg-gray-200 rounded-b block max-w-xs mx-auto sm:max-w-none sm:mx-0`;
+const Card = tw(motion.a)`bg-gray-200 rounded-b block max-w-xs mx-auto sm:max-w-none sm:mx-0 p-2`;
 const CardImageContainer = styled.div`
   ${props => css`background-image: url("${props.imageSrc}");`}
-  ${tw`h-56 xl:h-64 bg-center bg-cover relative rounded-t`};
+  ${tw`h-32 bg-center bg-cover relative rounded-t`};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -32,16 +32,20 @@ const CardImage = styled.img`
   ${tw`w-full h-full object-cover`};
 `;
 
-const CardText = tw.div`p-4 text-gray-900`;
-const CardTitle = tw.h5`text-lg font-semibold group-hover:text-primary-500`;
-const CardContent = tw.p`mt-1 text-sm font-medium text-gray-600`;
-const CardPrice = tw.p`mt-4 text-xl font-bold`;
+const CardText = tw.div`p-2 text-gray-900`;
+const CardTitle = tw.h5`text-sm font-semibold group-hover:text-primary-500`;
+const CardContent = tw.p`mt-1 text-xs font-medium text-gray-600`;
+const CardPrice = tw.p`mt-2 text-lg font-bold`;
 
 const DecoratorBlob1 = styled(SvgDecoratorBlob1)`
   ${tw`pointer-events-none -z-20 absolute right-0 top-0 h-64 w-64 opacity-15 transform translate-x-2/3 -translate-y-12 text-pink-400`}
 `;
 const DecoratorBlob2 = styled(SvgDecoratorBlob2)`
   ${tw`pointer-events-none -z-20 absolute left-0 bottom-0 h-80 w-80 opacity-15 transform -translate-x-2/3 text-primary-500`}
+`;
+
+const LoadingSpinner = styled(motion.div)`
+  ${tw`border-t-4 border-primary-500 border-solid rounded-full w-8 h-8`};
 `;
 
 const ProductCard = ({ product, tag }) => (
@@ -54,7 +58,7 @@ const ProductCard = ({ product, tag }) => (
         <CardTitle>{truncate(product.title, 50)}</CardTitle>
         <CardContent>{truncate(product.content, 100)}</CardContent>
         <CardPrice>{product.price}</CardPrice>
-        {tag && <span tw="bg-blue-500 text-white px-2 py-1 rounded">{tag}</span>}
+        {tag && <span tw="bg-blue-500 text-white px-2 py-1 rounded text-xs">{tag}</span>}
       </CardText>
     </Card>
   </CardContainer>
@@ -96,14 +100,22 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
   const [apiResults, setApiResults] = useState([]); // To store raw API results for debugging
   const [currentBatch, setCurrentBatch] = useState(0);
   const [remainingCount, setRemainingCount] = useState(0);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const productsAnalyzedRef = useRef(null);
 
   const handleSearch = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
+    setHasSearched(false); // Hide the "No articles to display" label
+    setSearchResults([]); // Hide the products and "Products analyzed" label
     setCurrentBatch(0);
     const results = await searchMercadoLibre(searchTerm);
     setApiResults(results); // Store raw API results for debugging
     setRemainingCount(results.length); // Set the initial count of analyzed products
     setSearchResults(getBestProducts(results));
+    setHasSearched(true); // Indicate that a search has been performed
+    setIsLoading(false);
   };
 
   const showMoreProducts = () => {
@@ -112,6 +124,7 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
     setCurrentBatch(currentBatch + 1);
     setRemainingCount(apiResults.length - (currentBatch + 1) * 3); // Update the remaining count
     setSearchResults(newBatch);
+    productsAnalyzedRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -125,13 +138,23 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
               placeholder="Type For example: dryer"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              disabled={isLoading}
             />
-            <SearchButton type="submit">Get the best</SearchButton>
+            <SearchButton type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <LoadingSpinner
+                  animate={{ x: [0, 20, 0] }}
+                  transition={{ repeat: Infinity, duration: 1 }}
+                />
+              ) : (
+                "Get the best"
+              )}
+            </SearchButton>
           </SearchForm>
         </HeaderRow>
-        {searchResults.length > 0 ? (
+        {hasSearched && !isLoading && searchResults.length > 0 && (
           <>
-            <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
+            <div ref={productsAnalyzedRef} style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
               Products analyzed: {remainingCount}
             </div>
             <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "20px" }}>
@@ -145,7 +168,8 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
               </button>
             </div>
           </>
-        ) : (
+        )}
+        {hasSearched && !isLoading && searchResults.length === 0 && (
           <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
             No articles to display
           </div>
