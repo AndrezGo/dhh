@@ -110,6 +110,7 @@ const ProductCard = ({ product, tag }) => {
             {tag && <span tw="bg-blue-500 text-white px-2 py-1 rounded text-xs">{tag}</span>}
           </div>
           <RatingAndReviews>
+            <div>{product.rating.toFixed(1)}</div>
             <StarRating>
               {[...Array(fullStars)].map((_, index) => (
                 <FilledStar key={index} />
@@ -142,16 +143,25 @@ const getBestProducts = (products) => {
     ...product,
     rating: product.rating === "N/A" ? 0 : parseFloat(product.rating),
     reviews: product.reviews === "N/A" ? 0 : parseInt(product.reviews, 10),
-    price: product.price
+    numericPrice: parseFloat(product.price.replace(/[^0-9.-]+/g, "")), // Convert to numeric price for calculations
+    price: product.price // Keep original price for display
   }));
 
-  const sortedProducts = validProducts.sort((a, b) => {
-    const aScore = a.rating * 0.5 + a.reviews * 0.3 + a.price * 0.2;
-    const bScore = b.rating * 0.5 + b.reviews * 0.3 + b.price * 0.2;
-    return bScore - aScore;
+  // Calcular puntuación compuesta
+  validProducts.forEach(product => {
+    product.score = product.rating * Math.log1p(product.reviews);
   });
-  
-  return sortedProducts.slice(0, 3).map((product, index) => ({
+
+  // Ordenar los productos
+  return validProducts.sort((a, b) => {
+    // Priorizar por la puntuación compuesta (calificación * log(reviews))
+    if (a.score !== b.score) {
+      return b.score - a.score; // Ordenar por puntuación descendente
+    }
+
+    // Si las puntuaciones son iguales, ordenar por precio ascendente
+    return a.numericPrice - b.numericPrice;
+  }).slice(0, 3).map((product, index) => ({
     ...product,
     tag: index === 0 ? 'Best Buy' : index === 1 ? 'Great Value' : 'Top Choice',
   }));
