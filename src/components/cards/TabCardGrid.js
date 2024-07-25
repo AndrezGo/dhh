@@ -19,7 +19,7 @@ const SearchButton = tw(PrimaryButtonBase)`mt-4 sm:mt-0 w-full sm:w-auto rounded
 const CardContainer = styled.div`
   ${tw`w-full sm:w-1/4 md:w-1/5 lg:w-1/6 sm:pr-4 md:pr-4 lg:pr-4 mb-4`};
 `;
-const Card = tw(motion.a)`bg-gray-200 rounded-b block max-w-xs mx-auto sm:max-w-none sm:mx-0 p-2`;
+const Card = tw(motion.a)`bg-gray-200 rounded-b block max-w-xs mx-auto sm:max-w-none sm:mx-0 p-2 relative`;
 const CardImageContainer = styled.div`
   ${props => css`background-image: url("${props.imageSrc}");`}
   ${tw`h-32 bg-center bg-cover relative rounded-t`};
@@ -32,10 +32,17 @@ const CardImage = styled.img`
   ${tw`w-full h-full object-cover`};
 `;
 
-const CardText = tw.div`p-2 text-gray-900`;
+const CardText = tw.div`p-2 text-gray-900 flex flex-col justify-between h-full`;
 const CardTitle = tw.h5`text-sm font-semibold group-hover:text-primary-500`;
 const CardContent = tw.p`mt-1 text-xs font-medium text-gray-600`;
 const CardPrice = tw.p`mt-2 text-lg font-bold`;
+
+const RatingAndReviews = styled.div`
+  ${tw`absolute bottom-0 right-0 m-2 text-xs text-gray-600`};
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
 
 const DecoratorBlob1 = styled(SvgDecoratorBlob1)`
   ${tw`pointer-events-none -z-20 absolute right-0 top-0 h-64 w-64 opacity-15 transform translate-x-2/3 -translate-y-12 text-pink-400`}
@@ -55,10 +62,16 @@ const ProductCard = ({ product, tag }) => (
         <CardImage src={product.image} alt={product.title} />
       </CardImageContainer>
       <CardText>
-        <CardTitle>{truncate(product.title, 50)}</CardTitle>
-        <CardContent>{truncate(product.content, 100)}</CardContent>
-        <CardPrice>{product.price}</CardPrice>
-        {tag && <span tw="bg-blue-500 text-white px-2 py-1 rounded text-xs">{tag}</span>}
+        <div>
+          <CardTitle>{truncate(product.title, 50)}</CardTitle>
+          <CardContent>{truncate(product.content, 100)}</CardContent>
+          <CardPrice>{product.price}</CardPrice>
+          {tag && <span tw="bg-blue-500 text-white px-2 py-1 rounded text-xs">{tag}</span>}
+        </div>
+        <RatingAndReviews>
+          <div>Rating: {product.rating}</div>
+          <div>Reviews: {product.reviews}</div>
+        </RatingAndReviews>
       </CardText>
     </Card>
   </CardContainer>
