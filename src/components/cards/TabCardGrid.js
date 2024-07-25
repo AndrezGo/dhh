@@ -175,6 +175,7 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [remainingCount, setRemainingCount] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
+  const [discardedCount, setDiscardedCount] = useState(0);
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const productsAnalyzedRef = useRef(null);
@@ -192,6 +193,7 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
     setRemainingCount(sortedProducts.length - 3);
     setSearchResults(sortedProducts.slice(0, 3));
     setCurrentIndex(3);
+    setDiscardedCount(0);
     setHasSearched(true);
     setIsLoading(false);
   };
@@ -201,7 +203,8 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
     const newBatch = apiResults.slice(currentIndex, nextIndex);
     setCurrentIndex(nextIndex);
     setRemainingCount(Math.max(remainingCount - newBatch.length, 0));
-    setSearchResults(prevResults => [...prevResults, ...newBatch]);
+    setSearchResults(newBatch);
+    setDiscardedCount(discardedCount + 3);
     productsAnalyzedRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -233,13 +236,17 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
         {hasSearched && !isLoading && searchResults.length > 0 && (
           <>
             <div ref={productsAnalyzedRef} style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
-              Products analyzed: {totalProducts} Showing {currentIndex}/{remainingCount}
+              Products analyzed: {totalProducts} Discarded: {discardedCount}
             </div>
             <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "20px" }}>
               <AnimatePresence>
-                {searchResults.map((product, index) => (
-                  <ProductCard key={product.title + index} product={product} tag={product.tag} />
-                ))}
+                {searchResults.map((product, index) => {
+                  let tag = "";
+                  if (index % 3 === 0) tag = "Best Buy";
+                  else if (index % 3 === 1) tag = "Great Value";
+                  else if (index % 3 === 2) tag = "Top Choice";
+                  return <ProductCard key={product.title + index} product={product} tag={tag} />;
+                })}
               </AnimatePresence>
             </div>
             {remainingCount > 0 && (
