@@ -134,33 +134,6 @@ const truncate = (str, maxLength) => {
   return str.slice(0, maxLength) + '...';
 };
 
-const getBestProducts = (products) => {
-  const filteredProducts = products.filter(product => {
-    return product.price !== "N/A" && product.title !== "N/A" && product.image && product.link;
-  });
-
-  const uniqueProducts = filteredProducts.filter((product, index, self) =>
-    index === self.findIndex((p) => p.title === product.title)
-  );
-
-  const validProducts = uniqueProducts.map(product => ({
-    ...product,
-    rating: product.rating === "N/A" ? 0 : parseFloat(product.rating),
-    reviews: product.reviews === "N/A" ? 0 : parseInt(product.reviews, 10),
-    numericPrice: parseFloat(product.price.replace(/[^0-9.-]+/g, "")),
-    price: product.price
-  }));
-
-  validProducts.forEach(product => {
-    product.score = product.rating * Math.log1p(product.reviews);
-  });
-
-  return validProducts.sort((a, b) => {
-    if (a.score !== b.score) return b.score - a.score;
-    return a.numericPrice - b.numericPrice;
-  });
-};
-
 const DecoratorBlob1 = styled(SvgDecoratorBlob1)`
   ${tw`pointer-events-none -z-20 absolute right-0 top-0 h-64 w-64 opacity-15 transform translate-x-2/3 -translate-y-12 text-pink-400`}
 `;
@@ -187,11 +160,10 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
     setSearchResults([]);
     setCurrentIndex(0);
     const results = await searchMercadoLibre(searchTerm);
-    const sortedProducts = getBestProducts(results);
-    setApiResults(sortedProducts);
-    setTotalProducts(sortedProducts.length);
-    setRemainingCount(sortedProducts.length - 3);
-    setSearchResults(sortedProducts.slice(0, 3));
+    setApiResults(results);
+    setTotalProducts(results.length);
+    setRemainingCount(results.length - 3);
+    setSearchResults(results.slice(0, 3));
     setCurrentIndex(3);
     setDiscardedCount(0);
     setHasSearched(true);
