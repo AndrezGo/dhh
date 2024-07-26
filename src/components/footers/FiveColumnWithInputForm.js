@@ -47,21 +47,6 @@ export default () => {
   return (
     <Container>
       <Content>
-        <SixColumns>
-          <SubscribeNewsletterColumn>
-            <SubscribeNewsletterContainer>
-              <ColumnHeading>Subscribe to our Newsletter</ColumnHeading>
-              <SubscribeText>
-                We deliver high quality blog posts written by professionals weekly. And we promise no spam.
-              </SubscribeText>
-              <SubscribeForm method="get" action="#">
-                <Input type="email" placeholder="Your Email Address" />
-                <SubscribeButton type="submit">Subscribe</SubscribeButton>
-              </SubscribeForm>
-            </SubscribeNewsletterContainer>
-          </SubscribeNewsletterColumn>
-        </SixColumns>
-        <Divider />
         <ThreeColRow>
           <LogoContainer>
             <LogoImg src={LogoImage} />
@@ -69,7 +54,7 @@ export default () => {
           </LogoContainer>
           <CopywrightNotice>&copy; 2024 Digital Home Hub. All Rights Reserved.</CopywrightNotice>
           <SocialLinksContainer>
-            <a href="https://www.instagram.com/digitalhomehub/"><InstagramIcon /></a>
+            <a href="#"><InstagramIcon /></a>
           </SocialLinksContainer>
         </ThreeColRow>
       </Content>

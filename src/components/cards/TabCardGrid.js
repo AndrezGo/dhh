@@ -265,12 +265,13 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
         </HeaderRow>
         {hasSearched && !isLoading && searchResults.length > 0 && (
           <>
-            <div ref={productsAnalyzedRef} style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
-              De Productos {totalProducts} Analizados escogímos, los 3 mejores del mercado
-            </div>
-            <div>
-                Productos Descartados: {discardedCount}
-            </div>
+            <div ref={productsAnalyzedRef} css={tw`mt-5 p-4 bg-gray-100 text-secondary-700 w-full text-center font-bold text-lg`}>
+            📊 De <span css={tw`text-primary-500`}>{totalProducts}</span> Productos procesados, escogimos los <span css={tw`text-primary-500`}>3 mejores</span> del mercado 🏆
+          </div>
+          <div css={tw`bg-yellow-400 text-gray-800 rounded-full px-4 py-2 shadow-lg max-w-xs text-center`}>
+                Descartados:<span css={tw`text-xl font-bold`}> {discardedCount}</span>
+          </div>
+
             <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "20px" }}>
               <AnimatePresence>
                 {searchResults.map((product, index) => {
