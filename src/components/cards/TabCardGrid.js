@@ -233,7 +233,7 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
             <InputContainer>
               <Input
                 type="text"
-                placeholder="Type For example: dryer"
+                placeholder="Escribir: Nevera"
                 value={searchTerm}
                 onChange={handleInputChange}
                 disabled={isLoading}
