@@ -7,14 +7,13 @@ import Footer from "components/footers/FiveColumnWithInputForm.js";
 
 export default () => {
   const HighlightedText = tw.span`bg-primary-500 text-gray-100 px-4 transform -skew-x-12 inline-block`;
-  const imageCss = tw`rounded-4xl`;
   return (
     <AnimationRevealPage>
       <Header />
       <TabGrid
         heading={
           <>
-            Lo mejor de <HighlightedText>Mercado libre</HighlightedText>
+            Lo mejor del <HighlightedText>Mercado</HighlightedText>
           </>
         }
       />

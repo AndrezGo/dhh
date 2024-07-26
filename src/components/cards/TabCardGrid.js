@@ -13,8 +13,21 @@ import { searchMercadoLibre } from "../../mercadoLibreService";
 const HeaderRow = tw.div`flex justify-between items-center flex-col xl:flex-row`;
 const Header = tw(SectionHeading)``;
 const SearchForm = tw.form`mt-4 lg:mt-6 text-sm sm:flex max-w-xs sm:max-w-none mx-auto sm:mx-0 relative`;
-const Input = tw.input`bg-gray-300 px-6 py-3 rounded sm:rounded-r-none border-2 sm:border-r-0 border-gray-400 hover:border-primary-500 focus:outline-none transition duration-300 w-full`;
-const SearchButton = tw(PrimaryButtonBase)`mt-4 sm:mt-0 w-full sm:w-auto rounded sm:rounded-l-none px-8 py-3`;
+const InputContainer = tw.div`relative w-full`;
+const Input = tw.input`bg-gray-300 px-6 py-3 rounded sm:rounded-r-none border-2 sm:border-r-0 border-gray-400 hover:border-primary-500 focus:outline-none transition duration-300 w-full text-lg placeholder-gray-500`;
+const SuggestionList = tw.ul`absolute bg-white border border-gray-400 w-full mt-1 z-10`;
+const SuggestionItem = tw.li`px-4 py-2 cursor-pointer hover:bg-gray-200`;
+
+const SearchButton = styled(PrimaryButtonBase)`
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      ${tw`bg-gray-300 cursor-not-allowed`}
+      &:hover {
+        ${tw`bg-gray-300`}
+      }
+    `}
+`;
 
 const CardContainer = styled(motion.div)`
   ${tw`w-full sm:w-1/4 md:w-1/5 lg:w-1/6 sm:pr-4 md:pr-4 lg:pr-4 mb-4`};
@@ -141,8 +154,17 @@ const DecoratorBlob2 = styled(SvgDecoratorBlob2)`
   ${tw`pointer-events-none -z-20 absolute left-0 bottom-0 h-80 w-80 opacity-15 transform -translate-x-2/3 text-primary-500`}
 `;
 
+const categories = [
+  "aspiradoras", "batidora", "cafetera", "camas", "chrome-cast", "colchon", "comedor",
+  "cubiertos", "cubrelecho", "cuchillos", "escritorio", "estufa", "exprimidor", "juego-de-sabanas",
+  "lamparas-mesa", "lamparas-piso", "lamparas-techo", "lavadora", "licuadora", "mesa-de-noche",
+  "mini-split", "nevera", "parlante", "planchas", "portatil", "regaderas", "sofa", "tablets",
+  "televisor", "tetera", "vajillas", "ventilador"
+];
+
 export default ({ heading = "Compare MercadoLibre Products" }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [apiResults, setApiResults] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -151,15 +173,17 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
   const [discardedCount, setDiscardedCount] = useState(0);
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const productsAnalyzedRef = useRef(null);
 
   const handleSearch = async (event) => {
     event.preventDefault();
+    if (!selectedCategory) return;
     setIsLoading(true);
     setHasSearched(false);
     setSearchResults([]);
     setCurrentIndex(0);
-    const results = await searchMercadoLibre(searchTerm);
+    const results = await searchMercadoLibre(selectedCategory);
     setApiResults(results);
     setTotalProducts(results.length);
     setRemainingCount(results.length - 3);
@@ -180,20 +204,54 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
     productsAnalyzedRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value) {
+      const filteredSuggestions = categories.filter(category =>
+        category.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+      setSelectedCategory('');
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setSearchTerm(suggestion);
+    setSelectedCategory(suggestion);
+    setSuggestions([]);
+  };
+
   return (
     <Container>
       <ContentWithPaddingXl>
         <Header>{heading}</Header>
         <HeaderRow>
           <SearchForm onSubmit={handleSearch}>
-            <Input
-              type="text"
-              placeholder="Type For example: dryer"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              disabled={isLoading}
-            />
-            <SearchButton type="submit" disabled={isLoading}>
+            <InputContainer>
+              <Input
+                type="text"
+                placeholder="Type For example: dryer"
+                value={searchTerm}
+                onChange={handleInputChange}
+                disabled={isLoading}
+              />
+              {suggestions.length > 0 && (
+                <SuggestionList>
+                  {suggestions.map((suggestion, index) => (
+                    <SuggestionItem
+                      key={index}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      {suggestion}
+                    </SuggestionItem>
+                  ))}
+                </SuggestionList>
+              )}
+            </InputContainer>
+            <SearchButton type="submit" disabled={!selectedCategory || isLoading}>
               {isLoading ? (
                 <LoadingSpinner
                   animate={{ x: [0, 20, 0] }}
@@ -208,7 +266,10 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
         {hasSearched && !isLoading && searchResults.length > 0 && (
           <>
             <div ref={productsAnalyzedRef} style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
-              Products analyzed: {totalProducts} Discarded: {discardedCount}
+              De Productos {totalProducts} Analizados escogímos, los 3 mejores del mercado
+            </div>
+            <div>
+                Productos Descartados: {discardedCount}
             </div>
             <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "20px" }}>
               <AnimatePresence>
@@ -224,7 +285,7 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
             {remainingCount > 0 && (
               <div style={{ textAlign: "center", marginTop: "20px" }}>
                 <button onClick={showMoreProducts} style={{ padding: "10px 20px", backgroundColor: "#4a90e2", color: "white", border: "none", borderRadius: "5px" }}>
-                  Not what I'm looking for? Show more
+                  ¿ No está lo que buscas? Ver más
                 </button>
               </div>
             )}
