@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import tw from "twin.macro";
 import styled from "styled-components";
@@ -102,13 +102,22 @@ const LoadingSpinner = styled(motion.div)`
   ${tw`border-t-4 border-primary-500 border-solid rounded-full w-8 h-8`};
 `;
 
-const ProductCard = ({ product, onLike, onDislike }) => {
+const ProductCard = ({ product, onLike, onDislike, isAnimating, animationDirection }) => {
   const fullStars = Math.floor(product.rating);
   const halfStars = product.rating % 1 >= 0.5 ? 1 : 0;
   const emptyStars = 5 - fullStars - halfStars;
 
   return (
-    <CardContainer initial={{ rotateY: 90 }} animate={{ rotateY: 0 }} transition={{ duration: 0.5 }}>
+    <CardContainer
+      initial={{ x: 0, opacity: 1 }}
+      animate={
+        isAnimating
+          ? { x: animationDirection > 0 ? 300 : -300, opacity: 0 }
+          : { x: 0, opacity: 1 }
+      }
+      exit={{ x: animationDirection > 0 ? 300 : -300, opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <Card>
         <CardImageContainer imageSrc={product.image}>
           <CardImage src={product.image} alt={product.title} />
@@ -176,6 +185,8 @@ export default () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [animationDirection, setAnimationDirection] = useState(0);
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -190,15 +201,25 @@ export default () => {
   };
 
   const handleLike = () => {
-    if (currentIndex < apiResults.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
+    setAnimationDirection(1);
+    setIsAnimating(true);
+    setTimeout(() => {
+      setIsAnimating(false);
+      if (currentIndex < apiResults.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      }
+    }, 500);
   };
 
   const handleDislike = () => {
-    if (currentIndex < apiResults.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
+    setAnimationDirection(-1);
+    setIsAnimating(true);
+    setTimeout(() => {
+      setIsAnimating(false);
+      if (currentIndex < apiResults.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      }
+    }, 500);
   };
 
   const handleInputChange = (e) => {
@@ -260,15 +281,20 @@ export default () => {
             </SearchButton>
           </SearchForm>
         </HeaderRow>
-        {hasSearched && !isLoading && currentIndex < apiResults.length && (
-          <div css={tw`flex justify-center mt-10`}>
-            <ProductCard
-              product={apiResults[currentIndex]}
-              onLike={handleLike}
-              onDislike={handleDislike}
-            />
-          </div>
-        )}
+        <AnimatePresence>
+          {hasSearched && !isLoading && currentIndex < apiResults.length && (
+            <div css={tw`flex justify-center mt-10`}>
+              <ProductCard
+                key={apiResults[currentIndex].id}
+                product={apiResults[currentIndex]}
+                onLike={handleLike}
+                onDislike={handleDislike}
+                isAnimating={isAnimating}
+                animationDirection={animationDirection}
+              />
+            </div>
+          )}
+        </AnimatePresence>
         {hasSearched && !isLoading && currentIndex >= apiResults.length && (
           <div css={tw`mt-10 text-center text-gray-700`}>
             No hay más productos para mostrar.
