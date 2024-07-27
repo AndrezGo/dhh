@@ -10,13 +10,7 @@ export default () => {
   return (
     <AnimationRevealPage>
       <Header />
-      <TabGrid
-        heading={
-          <>
-            Lo mejor del <HighlightedText>Mercado</HighlightedText>
-          </>
-        }
-      />
+      <TabGrid/>
       <Footer />
     </AnimationRevealPage>
   );

@@ -30,31 +30,29 @@ const SearchButton = styled(PrimaryButtonBase)`
 `;
 
 const CardContainer = styled(motion.div)`
-  ${tw`w-full sm:w-1/4 md:w-1/5 lg:w-1/6 sm:pr-4 md:pr-4 lg:pr-4 mb-4`};
+  ${tw`w-full max-w-xs sm:max-w-sm lg:max-w-md mx-auto mb-4`};
 `;
-const Card = tw(motion.a)`bg-gray-200 rounded-b block max-w-xs mx-auto sm:max-w-none sm:mx-0 p-2 relative`;
+const Card = tw(motion.div)`bg-gray-200 rounded-lg block w-full p-4 relative`;
 const CardImageContainer = styled.div`
-  ${props => css`background-image: url("${props.imageSrc}");`}
-  ${tw`h-32 bg-center bg-cover relative rounded-t`};
+  ${tw`h-32 sm:h-48 relative rounded-t-lg`};
+  background: url("${props => props.imageSrc}") center center / contain no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  min-height: 200px;
 `;
 const CardImage = styled.img`
-  ${tw`w-full h-full object-cover`};
+  display: none;
 `;
 
 const CardText = tw.div`p-2 text-gray-900 flex flex-col justify-between h-full`;
-const CardTitle = tw.h5`text-sm font-semibold group-hover:text-primary-500`;
+const CardTitle = tw.h5`text-sm font-semibold`;
 const CardContent = tw.p`mt-1 text-xs font-medium text-gray-600`;
 const CardPrice = tw.p`mt-2 text-lg font-bold`;
 
 const RatingAndReviews = styled.div`
-  ${tw`absolute bottom-0 right-0 m-2 text-xs text-gray-600`};
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  ${tw`flex items-center mt-2`};
 `;
 
 const StarRating = styled.div`
@@ -104,15 +102,15 @@ const LoadingSpinner = styled(motion.div)`
   ${tw`border-t-4 border-primary-500 border-solid rounded-full w-8 h-8`};
 `;
 
-const ProductCard = ({ product, tag }) => {
+const ProductCard = ({ product, onLike, onDislike }) => {
   const fullStars = Math.floor(product.rating);
   const halfStars = product.rating % 1 >= 0.5 ? 1 : 0;
   const emptyStars = 5 - fullStars - halfStars;
 
   return (
     <CardContainer initial={{ rotateY: 90 }} animate={{ rotateY: 0 }} transition={{ duration: 0.5 }}>
-      <Card className="group" href={product.link} initial="rest" whileHover="hover" animate="rest">
-        <CardImageContainer>
+      <Card>
+        <CardImageContainer imageSrc={product.image}>
           <CardImage src={product.image} alt={product.title} />
         </CardImageContainer>
         <CardText>
@@ -120,10 +118,8 @@ const ProductCard = ({ product, tag }) => {
             <CardTitle>{truncate(product.title, 50)}</CardTitle>
             <CardContent>{truncate(product.content, 100)}</CardContent>
             <CardPrice>{product.price}</CardPrice>
-            {tag && <span tw="bg-blue-500 text-white px-2 py-1 rounded text-xs">{tag}</span>}
           </div>
           <RatingAndReviews>
-            <div>{product.rating.toFixed(1)}</div>
             <StarRating>
               {[...Array(fullStars)].map((_, index) => (
                 <FilledStar key={index} />
@@ -133,8 +129,13 @@ const ProductCard = ({ product, tag }) => {
                 <EmptyStar key={index + fullStars + halfStars} />
               ))}
             </StarRating>
-            <div>Reviews: {product.reviews}</div>
+            <div css={tw`ml-2 text-xs`}>{product.rating.toFixed(1)}</div>
+            <div css={tw`ml-2 text-xs`}>({product.reviews} reviews)</div>
           </RatingAndReviews>
+          <div css={tw`flex justify-center mt-4 space-x-4`}>
+            <button onClick={onDislike} css={tw`px-4 py-2 bg-red-500 text-white rounded text-sm`}>Dislike</button>
+            <button onClick={onLike} css={tw`px-4 py-2 bg-green-500 text-white rounded text-sm`}>Like</button>
+          </div>
         </CardText>
       </Card>
     </CardContainer>
@@ -162,46 +163,37 @@ const categories = [
   "televisor", "tetera", "vajillas", "ventilador"
 ];
 
-export default ({ heading = "Compare MercadoLibre Products" }) => {
+export default () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
   const [apiResults, setApiResults] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [remainingCount, setRemainingCount] = useState(0);
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [discardedCount, setDiscardedCount] = useState(0);
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const productsAnalyzedRef = useRef(null);
 
   const handleSearch = async (event) => {
     event.preventDefault();
     if (!selectedCategory) return;
     setIsLoading(true);
     setHasSearched(false);
-    setSearchResults([]);
     setCurrentIndex(0);
     const results = await searchMercadoLibre(selectedCategory);
     setApiResults(results);
-    setTotalProducts(results.length);
-    setRemainingCount(results.length - 3);
-    setSearchResults(results.slice(0, 3));
-    setCurrentIndex(3);
-    setDiscardedCount(0);
     setHasSearched(true);
     setIsLoading(false);
   };
 
-  const showMoreProducts = () => {
-    const nextIndex = currentIndex + 3;
-    const newBatch = apiResults.slice(currentIndex, nextIndex);
-    setCurrentIndex(nextIndex);
-    setRemainingCount(Math.max(remainingCount - newBatch.length, 0));
-    setSearchResults(newBatch);
-    setDiscardedCount(discardedCount + 3);
-    productsAnalyzedRef.current.scrollIntoView({ behavior: 'smooth' });
+  const handleLike = () => {
+    if (currentIndex < apiResults.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const handleDislike = () => {
+    if (currentIndex < apiResults.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -227,7 +219,7 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
   return (
     <Container>
       <ContentWithPaddingXl>
-        <Header>{heading}</Header>
+        <Header />
         <HeaderRow>
           <SearchForm onSubmit={handleSearch}>
             <InputContainer>
@@ -263,38 +255,23 @@ export default ({ heading = "Compare MercadoLibre Products" }) => {
             </SearchButton>
           </SearchForm>
         </HeaderRow>
-        {hasSearched && !isLoading && searchResults.length > 0 && (
-          <>
-            <div ref={productsAnalyzedRef} css={tw`mt-5 p-4 bg-gray-100 text-secondary-700 w-full text-center font-bold text-lg`}>
-            📊 De <span css={tw`text-primary-500`}>{totalProducts}</span> Productos procesados, escogimos los <span css={tw`text-primary-500`}>3 mejores</span> del mercado 🏆
+        {hasSearched && !isLoading && currentIndex < apiResults.length && (
+          <div css={tw`flex justify-center mt-10`}>
+            <ProductCard
+              product={apiResults[currentIndex]}
+              onLike={handleLike}
+              onDislike={handleDislike}
+            />
           </div>
-          <div css={tw`bg-yellow-400 text-gray-800 rounded-full px-4 py-2 shadow-lg max-w-xs text-center`}>
-                Descartados:<span css={tw`text-xl font-bold`}> {discardedCount}</span>
-          </div>
-
-            <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "20px" }}>
-              <AnimatePresence>
-                {searchResults.map((product, index) => {
-                  let tag = "";
-                  if (index % 3 === 0) tag = "Best Buy";
-                  else if (index % 3 === 1) tag = "Great Value";
-                  else if (index % 3 === 2) tag = "Top Choice";
-                  return <ProductCard key={product.title + index} product={product} tag={tag} />;
-                })}
-              </AnimatePresence>
-            </div>
-            {remainingCount > 0 && (
-              <div style={{ textAlign: "center", marginTop: "20px" }}>
-                <button onClick={showMoreProducts} style={{ padding: "10px 20px", backgroundColor: "#4a90e2", color: "white", border: "none", borderRadius: "5px" }}>
-                  ¿ No está lo que buscas? Ver más
-                </button>
-              </div>
-            )}
-          </>
         )}
-        {hasSearched && !isLoading && searchResults.length === 0 && (
-          <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#e2e8f0", width: "100%", textAlign: "center" }}>
-            No articles to display
+        {hasSearched && !isLoading && currentIndex >= apiResults.length && (
+          <div css={tw`mt-10 text-center text-gray-700`}>
+            No hay más productos para mostrar.
+          </div>
+        )}
+        {hasSearched && !isLoading && apiResults.length > 0 && (
+          <div css={tw`mt-5 p-4 bg-gray-100 text-secondary-700 w-full text-center font-bold text-lg`}>
+            📊 Procesamos <span css={tw`text-primary-500`}>{apiResults.length}</span> productos.
           </div>
         )}
       </ContentWithPaddingXl>
