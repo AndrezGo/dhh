@@ -11,8 +11,8 @@ import { ReactComponent as SvgDecoratorBlob2 } from "images/svg-decorator-blob-7
 import { searchMercadoLibre } from "../../mercadoLibreService";
 
 const HeaderRow = tw.div`flex justify-between items-center flex-col xl:flex-row`;
-const Header = tw(SectionHeading)``;
-const SearchForm = tw.form`mt-4 lg:mt-6 text-sm sm:flex max-w-xs sm:max-w-none mx-auto sm:mx-0 relative`;
+const Header = tw(SectionHeading)`mt-0`;
+const SearchForm = tw.form`mt-2 lg:mt-3 text-sm sm:flex max-w-xs sm:max-w-none mx-auto sm:mx-0 relative`;
 const InputContainer = tw.div`relative w-full`;
 const Input = tw.input`bg-gray-300 px-6 py-3 rounded sm:rounded-r-none border-2 sm:border-r-0 border-gray-400 hover:border-primary-500 focus:outline-none transition duration-300 w-full text-lg placeholder-gray-500`;
 const SuggestionList = tw.ul`absolute bg-white border border-gray-400 w-full mt-1 z-10`;
@@ -155,6 +155,11 @@ const DecoratorBlob2 = styled(SvgDecoratorBlob2)`
   ${tw`pointer-events-none -z-20 absolute left-0 bottom-0 h-80 w-80 opacity-15 transform -translate-x-2/3 text-primary-500`}
 `;
 
+const CustomContent = styled(ContentWithPaddingXl)`
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+`;
+
 const categories = [
   "aspiradoras", "batidora", "cafetera", "camas", "chrome-cast", "colchon", "comedor",
   "cubiertos", "cubrelecho", "cuchillos", "escritorio", "estufa", "exprimidor", "juego-de-sabanas",
@@ -218,7 +223,7 @@ export default () => {
 
   return (
     <Container>
-      <ContentWithPaddingXl>
+      <CustomContent>
         <Header />
         <HeaderRow>
           <SearchForm onSubmit={handleSearch}>
@@ -274,7 +279,7 @@ export default () => {
             📊 Procesamos <span css={tw`text-primary-500`}>{apiResults.length}</span> productos.
           </div>
         )}
-      </ContentWithPaddingXl>
+      </CustomContent>
       <DecoratorBlob1 />
       <DecoratorBlob2 />
     </Container>
