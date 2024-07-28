@@ -27,14 +27,16 @@ const colors = {
 
 const SearchButton = styled(PrimaryButtonBase)`
   ${({ disabled }) =>
-    disabled &&
-    css`
-      ${tw`bg-gray-300 cursor-not-allowed`}
-      &:hover {
-        ${tw`bg-gray-300`}
-      }
-    `}
-  ${tw`bg-blue-500 hover:bg-blue-700`}
+    disabled
+      ? css`
+          ${tw`bg-gray-300 cursor-not-allowed`}
+          &:hover {
+            ${tw`bg-gray-300`}
+          }
+        `
+      : css`
+          ${tw`bg-blue-500 hover:bg-blue-700`}
+        `}
 `;
 
 const CardContainer = styled(motion.div)`
@@ -259,6 +261,10 @@ export default () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
+    const matchingCategory = categories.find(category =>
+      category.toLowerCase() === value.toLowerCase()
+    );
+    setSelectedCategory(matchingCategory ? value : '');
     if (value) {
       const filteredSuggestions = categories.filter(category =>
         category.toLowerCase().includes(value.toLowerCase())
@@ -266,7 +272,6 @@ export default () => {
       setSuggestions(filteredSuggestions);
     } else {
       setSuggestions([]);
-      setSelectedCategory('');
     }
   };
 
@@ -350,7 +355,9 @@ export default () => {
           </div>
         )}
       </CustomContent>
-      <Footer />
+      <Footer>
+        © 2024 Digital Home Hub. All Rights Reserved.
+      </Footer>
       <DecoratorBlob1 />
       <DecoratorBlob2 />
     </Container>
