@@ -224,6 +224,8 @@ export default () => {
       setIsAnimating(false);
       if (currentIndex < apiResults.length - 1) {
         setCurrentIndex(currentIndex + 1);
+      } else {
+        setHasSearched(false);
       }
     }, 500);
   };
@@ -235,6 +237,8 @@ export default () => {
       setIsAnimating(false);
       if (currentIndex < apiResults.length - 1) {
         setCurrentIndex(currentIndex + 1);
+      } else {
+        setHasSearched(false);
       }
     }, 500);
   };
@@ -333,7 +337,8 @@ export default () => {
           </div>
         )}
       </CustomContent>
-      <Footer></Footer>
+      <Footer>
+      </Footer>
       <DecoratorBlob1 />
       <DecoratorBlob2 />
     </Container>
