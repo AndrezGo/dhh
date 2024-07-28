@@ -196,7 +196,7 @@ const categories = [
   "cubiertos", "cubrelecho", "cuchillos", "escritorio", "estufa", "exprimidor", "juego-de-sabanas",
   "lamparas-mesa", "lamparas-piso", "lamparas-techo", "lavadora", "licuadora", "mesa-de-noche",
   "mini-split", "nevera", "parlante", "planchas", "portatil", "regaderas", "sofa", "tablets",
-  "televisor", "tetera", "vajillas", "ventilador"
+  "televisor", "tetera", "vajillas", "ventilador","playstation","xbox","nintendo","sillas"
 ];
 
 const Footer = styled.div`
