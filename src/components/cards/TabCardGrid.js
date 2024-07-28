@@ -141,6 +141,11 @@ const ProductCard = ({ product, onLike, onDislike, isAnimating, animationDirecti
             <div css={tw`ml-2 text-xs`}>{product.rating.toFixed(1)}</div>
             <div css={tw`ml-2 text-xs`}>({product.reviews} reviews)</div>
           </RatingAndReviews>
+          <a href={product.link} rel="noopener noreferrer">
+            <button css={tw`mb-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}>
+              Comprar
+            </button>
+          </a>
           <div css={tw`flex justify-center mt-4 space-x-4`}>
             <button onClick={onDislike} css={tw`px-4 py-2 bg-red-500 text-white rounded text-sm`}>
               ❌
@@ -337,8 +342,7 @@ export default () => {
           </div>
         )}
       </CustomContent>
-      <Footer>
-      </Footer>
+      <Footer />
       <DecoratorBlob1 />
       <DecoratorBlob2 />
     </Container>
