@@ -350,9 +350,7 @@ export default () => {
           </div>
         )}
       </CustomContent>
-      <Footer>
-        © 2024 Digital Home Hub. All Rights Reserved.
-      </Footer>
+      <Footer />
       <DecoratorBlob1 />
       <DecoratorBlob2 />
     </Container>
