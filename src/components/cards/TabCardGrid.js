@@ -18,6 +18,13 @@ const Input = tw.input`bg-gray-300 px-6 py-3 rounded sm:rounded-r-none border-2 
 const SuggestionList = tw.ul`absolute bg-white border border-gray-400 w-full mt-1 z-10`;
 const SuggestionItem = tw.li`px-4 py-2 cursor-pointer hover:bg-gray-200`;
 
+const colors = {
+  blue: '#007bff', // color azul del logo
+  red: '#ff4b5c', // color rojo del logo
+  yellow: '#ffcb05', // color amarillo del logo
+  green: '#00d1b2' // color verde del logo
+};
+
 const SearchButton = styled(PrimaryButtonBase)`
   ${({ disabled }) =>
     disabled &&
@@ -27,6 +34,7 @@ const SearchButton = styled(PrimaryButtonBase)`
         ${tw`bg-gray-300`}
       }
     `}
+  ${tw`bg-blue-500 hover:bg-blue-700`}
 `;
 
 const CardContainer = styled(motion.div)`
@@ -141,16 +149,16 @@ const ProductCard = ({ product, onLike, onDislike, isAnimating, animationDirecti
             <div css={tw`ml-2 text-xs`}>{product.rating.toFixed(1)}</div>
             <div css={tw`ml-2 text-xs`}>({product.reviews} reviews)</div>
           </RatingAndReviews>
-          <a href={product.link} rel="noopener noreferrer">
-            <button css={tw`mb-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}>
+          <a href={product.link} target="_blank" rel="noopener noreferrer">
+            <button css={tw`mb-4 w-full bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded`}>
               Comprar
             </button>
           </a>
           <div css={tw`flex justify-center mt-4 space-x-4`}>
-            <button onClick={onDislike} css={tw`px-4 py-2 bg-red-500 text-white rounded text-sm`}>
+            <button onClick={onDislike} css={tw`px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded text-sm`}>
               ❌
             </button>
-            <button onClick={onLike} css={tw`px-4 py-2 bg-green-500 text-white rounded text-sm`}>
+            <button onClick={onLike} css={tw`px-4 py-2 bg-green-500 hover:bg-green-700 text-white rounded text-sm`}>
               ✔️
             </button>
           </div>
@@ -342,7 +350,9 @@ export default () => {
           </div>
         )}
       </CustomContent>
-      <Footer />
+      <Footer>
+        © 2024 Digital Home Hub. All Rights Reserved.
+      </Footer>
       <DecoratorBlob1 />
       <DecoratorBlob2 />
     </Container>
