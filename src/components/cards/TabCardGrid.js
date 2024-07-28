@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import tw from "twin.macro";
 import styled from "styled-components";
@@ -109,13 +109,13 @@ const ProductCard = ({ product, onLike, onDislike, isAnimating, animationDirecti
 
   return (
     <CardContainer
-      initial={{ x: 0, opacity: 1 }}
+      initial={{ rotateY: 0 }}
       animate={
         isAnimating
-          ? { x: animationDirection > 0 ? 300 : -300, opacity: 0 }
-          : { x: 0, opacity: 1 }
+          ? { rotateY: animationDirection > 0 ? 180 : -180, opacity: 0 }
+          : { rotateY: 0, opacity: 1 }
       }
-      exit={{ x: animationDirection > 0 ? 300 : -300, opacity: 0 }}
+      exit={{ rotateY: animationDirection > 0 ? 180 : -180, opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
       <Card>
@@ -142,8 +142,12 @@ const ProductCard = ({ product, onLike, onDislike, isAnimating, animationDirecti
             <div css={tw`ml-2 text-xs`}>({product.reviews} reviews)</div>
           </RatingAndReviews>
           <div css={tw`flex justify-center mt-4 space-x-4`}>
-            <button onClick={onDislike} css={tw`px-4 py-2 bg-red-500 text-white rounded text-sm`}>Dislike</button>
-            <button onClick={onLike} css={tw`px-4 py-2 bg-green-500 text-white rounded text-sm`}>Like</button>
+            <button onClick={onDislike} css={tw`px-4 py-2 bg-red-500 text-white rounded text-sm`}>
+              ❌
+            </button>
+            <button onClick={onLike} css={tw`px-4 py-2 bg-green-500 text-white rounded text-sm`}>
+              ✔️
+            </button>
           </div>
         </CardText>
       </Card>
@@ -167,7 +171,10 @@ const DecoratorBlob2 = styled(SvgDecoratorBlob2)`
 const CustomContent = styled(ContentWithPaddingXl)`
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+  ${tw`min-h-screen flex flex-col`}
 `;
+
+const Message = tw.div`mt-10 text-center text-gray-700 font-semibold text-lg`;
 
 const categories = [
   "aspiradoras", "batidora", "cafetera", "camas", "chrome-cast", "colchon", "comedor",
@@ -176,6 +183,10 @@ const categories = [
   "mini-split", "nevera", "parlante", "planchas", "portatil", "regaderas", "sofa", "tablets",
   "televisor", "tetera", "vajillas", "ventilador"
 ];
+
+const Footer = styled.div`
+  ${tw`mt-auto py-4 text-center text-gray-500 text-sm`}
+`;
 
 export default () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -187,6 +198,12 @@ export default () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationDirection, setAnimationDirection] = useState(0);
+
+  useEffect(() => {
+    if (!hasSearched) {
+      setApiResults([]);
+    }
+  }, [hasSearched]);
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -281,6 +298,11 @@ export default () => {
             </SearchButton>
           </SearchForm>
         </HeaderRow>
+        {!hasSearched && (
+          <Message>
+            No hay productos para mostrar.
+          </Message>
+        )}
         <AnimatePresence>
           {hasSearched && !isLoading && currentIndex < apiResults.length && (
             <div css={tw`flex justify-center mt-10`}>
@@ -296,9 +318,14 @@ export default () => {
           )}
         </AnimatePresence>
         {hasSearched && !isLoading && currentIndex >= apiResults.length && (
-          <div css={tw`mt-10 text-center text-gray-700`}>
+          <Message>
             No hay más productos para mostrar.
-          </div>
+          </Message>
+        )}
+        {hasSearched && !isLoading && apiResults.length === 0 && (
+          <Message>
+            No hay productos para mostrar.
+          </Message>
         )}
         {hasSearched && !isLoading && apiResults.length > 0 && (
           <div css={tw`mt-5 p-4 bg-gray-100 text-secondary-700 w-full text-center font-bold text-lg`}>
@@ -306,6 +333,7 @@ export default () => {
           </div>
         )}
       </CustomContent>
+      <Footer></Footer>
       <DecoratorBlob1 />
       <DecoratorBlob2 />
     </Container>
