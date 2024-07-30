@@ -9,6 +9,8 @@ import { PrimaryButton as PrimaryButtonBase } from "components/misc/Buttons.js";
 import { ReactComponent as SvgDecoratorBlob1 } from "images/svg-decorator-blob-5.svg";
 import { ReactComponent as SvgDecoratorBlob2 } from "images/svg-decorator-blob-7.svg";
 import { searchMercadoLibre } from "../../mercadoLibreService";
+import 'tailwindcss/tailwind.css';
+import { ReactComponent as CameraIcon } from "../../images/photo-camera-svgrepo-com.svg";
 
 const HeaderRow = tw.div`flex justify-between items-center flex-col xl:flex-row`;
 const Header = tw(SectionHeading)`mt-0`;
@@ -19,10 +21,10 @@ const SuggestionList = tw.ul`absolute bg-white border border-gray-400 w-full mt-
 const SuggestionItem = tw.li`px-4 py-2 cursor-pointer hover:bg-gray-200`;
 
 const colors = {
-  blue: '#007bff', // color azul del logo
-  red: '#ff4b5c', // color rojo del logo
-  yellow: '#ffcb05', // color amarillo del logo
-  green: '#00d1b2' // color verde del logo
+  blue: '#007bff',
+  red: '#ff4b5c',
+  yellow: '#ffcb05',
+  green: '#00d1b2'
 };
 
 const SearchButton = styled(PrimaryButtonBase)`
@@ -112,7 +114,61 @@ const LoadingSpinner = styled(motion.div)`
   ${tw`border-t-4 border-primary-500 border-solid rounded-full w-8 h-8`};
 `;
 
-const ProductCard = ({ product, onLike, onDislike, isAnimating, animationDirection }) => {
+const Modal = ({ isOpen, onClose, images }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentIndex(0);
+    }
+  }, [isOpen]);
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          tw="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-75 flex justify-center items-center"
+        >
+          <motion.div tw="relative p-8 bg-white w-full max-w-lg m-auto flex flex-col items-center rounded-lg">
+            <span tw="absolute top-0 right-0 p-4 cursor-pointer" onClick={onClose}>
+              &times;
+            </span>
+            <div tw="flex flex-col items-center">
+              <img src={images[currentIndex]} alt={`Product ${currentIndex}`} tw="my-4" />
+              <div tw="flex justify-between w-full">
+                <button
+                  onClick={handlePrev}
+                  tw="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded text-sm"
+                >
+                  Prev
+                </button>
+                <button
+                  onClick={handleNext}
+                  tw="px-4 py-2 bg-green-500 hover:bg-green-700 text-white rounded text-sm"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+const ProductCard = ({ product, onLike, onDislike, isAnimating, animationDirection, onImageClick }) => {
   const fullStars = Math.floor(product.rating);
   const halfStars = product.rating % 1 >= 0.5 ? 1 : 0;
   const emptyStars = 5 - fullStars - halfStars;
@@ -131,6 +187,9 @@ const ProductCard = ({ product, onLike, onDislike, isAnimating, animationDirecti
       <Card>
         <CardImageContainer imageSrc={product.image}>
           <CardImage src={product.image} alt={product.title} />
+          <button onClick={onImageClick} tw="absolute bg-yellow-500 hover:bg-yellow-700 text-white rounded-full p-2">
+            <CameraIcon tw="w-6 h-6" />
+          </button>
         </CardImageContainer>
         <CardText>
           <div>
@@ -213,6 +272,8 @@ export default () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationDirection, setAnimationDirection] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImages, setModalImages] = useState([]);
 
   useEffect(() => {
     if (!hasSearched) {
@@ -281,6 +342,15 @@ export default () => {
     setSuggestions([]);
   };
 
+  const handleImageClick = (images) => {
+    setModalImages(images);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <Container>
       <CustomContent>
@@ -335,6 +405,7 @@ export default () => {
                 onDislike={handleDislike}
                 isAnimating={isAnimating}
                 animationDirection={animationDirection}
+                onImageClick={() => handleImageClick(apiResults[currentIndex].images)}
               />
             </div>
           )}
@@ -360,6 +431,7 @@ export default () => {
       </Footer>
       <DecoratorBlob1 />
       <DecoratorBlob2 />
+      <Modal isOpen={isModalOpen} onClose={closeModal} images={modalImages} />
     </Container>
   );
 };
