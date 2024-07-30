@@ -10,7 +10,7 @@ import { ReactComponent as SvgDecoratorBlob1 } from "images/svg-decorator-blob-5
 import { ReactComponent as SvgDecoratorBlob2 } from "images/svg-decorator-blob-7.svg";
 import { searchMercadoLibre } from "../../mercadoLibreService";
 import 'tailwindcss/tailwind.css';
-import { ReactComponent as CameraIcon } from "../../images/photo-camera-svgrepo-com.svg";
+import { ReactComponent as CameraIcon } from "../../images/photo-camera-svgrepo-com.svg"; 
 
 const HeaderRow = tw.div`flex justify-between items-center flex-col xl:flex-row`;
 const Header = tw(SectionHeading)`mt-0`;
@@ -145,8 +145,10 @@ const Modal = ({ isOpen, onClose, images }) => {
               &times;
             </span>
             <div tw="flex flex-col items-center">
-              <img src={images[currentIndex]} alt={`Product ${currentIndex}`} tw="my-4" />
-              <div tw="flex justify-between w-full">
+              <div tw="w-full h-96 flex items-center justify-center">
+                <img src={images[currentIndex]} alt={`Product ${currentIndex}`} tw="max-h-full max-w-full object-contain" />
+              </div>
+              <div tw="flex justify-between w-full mt-4">
                 <button
                   onClick={handlePrev}
                   tw="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded text-sm"
