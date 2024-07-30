@@ -144,25 +144,24 @@ const Modal = ({ isOpen, onClose, images }) => {
             <span tw="absolute top-0 right-0 p-4 cursor-pointer" onClick={onClose}>
               &times;
             </span>
-            <div tw="flex flex-col items-center">
-              <div tw="w-full h-96 flex items-center justify-center">
-                <img src={images[currentIndex]} alt={`Product ${currentIndex}`} tw="max-h-full max-w-full object-contain" />
-              </div>
-              <div tw="flex justify-between w-full mt-4">
-                <button
-                  onClick={handlePrev}
-                  tw="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded text-sm"
-                >
-                  Prev
-                </button>
-                <button
-                  onClick={handleNext}
-                  tw="px-4 py-2 bg-green-500 hover:bg-green-700 text-white rounded text-sm"
-                >
-                  Next
-                </button>
-              </div>
+            <div tw="w-full h-96 flex items-center justify-center">
+              <img src={images[currentIndex]} alt={`Product ${currentIndex}`} tw="max-h-full max-w-full object-contain" />
             </div>
+            <div tw="flex justify-between w-full mt-4" style={{ position: 'absolute', bottom: '16px' }}>
+  <button
+    onClick={handlePrev}
+    tw="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded text-sm"
+  >
+    Prev
+  </button>
+  <button
+    onClick={handleNext}
+    tw="px-4 py-2 bg-green-500 hover:bg-green-700 text-white rounded text-sm"
+  >
+    Next
+  </button>
+</div>
+
           </motion.div>
         </motion.div>
       )}
